@@ -65,6 +65,41 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
      *  http://www.cplusplus.com/reference/random/default_random_engine/
      */
 
+    double std_x = std_pos[0];
+    double std_y = std_pos[1];
+    double std_theta = std_pos[2];
+
+
+    // create normal(Guassinan) distribution for x
+    normal_distribution<double> dist_x(0, std_x);
+    // create normal(Guassinan) distribution for y
+    normal_distribution<double> dist_y(0, std_y);
+    // create normal(Guassinan) distribution for theta
+    normal_distribution<double> dist_theta(0, std_theta);
+
+    for (auto &particle: particles)
+    {
+        double theta = particle.theta;
+        if (fabs(yaw_rate) < 0.00001)
+        {
+            particle.x += velocity * delta_t * cos(theta);
+            particle.y += velocity * delta_t * sin(theta);
+        }
+        else
+        {
+            particle.x += velocity / yaw_rate * (sin(theta + yaw_rate * delta_t) - sin(theta));
+            particle.y += velocity / yaw_rate * (cos(theta) - cos(theta + yaw_rate * delta_t));
+            particle.theta += yaw_rate * delta_t;
+        }
+
+        // Adding noises
+        particle.x += dist_x(gen);
+        particle.y += dist_y(gen);
+        particle.theta += dist_theta(gen);
+
+    }
+
+
 }
 
 void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted, vector<LandmarkObs> &observations)
