@@ -24,15 +24,6 @@ using std::normal_distribution;
 
 void ParticleFilter::init(double x, double y, double theta, double std[])
 {
-    /**
-     * TODO: Set the number of particles. Initialize all particles to
-     *   first position (based on estimates of x, y, theta and their uncertainties
-     *   from GPS) and all weights to 1.
-     * TODO: Add random Gaussian noise to each particle.
-     * NOTE: Consult particle_filter.h for more information about this method
-     *   (and others in this file).
-     */
-
     if (is_initialized)
         return;
 
@@ -64,8 +55,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[])
 
 }
 
-void ParticleFilter::prediction(double delta_t, double std_pos[],
-                                double velocity, double yaw_rate)
+void ParticleFilter::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate)
 {
     /**
      * TODO: Add measurements to each particle and add random Gaussian noise.
@@ -77,8 +67,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
 
 }
 
-void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
-                                     vector<LandmarkObs> &observations)
+void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted, vector<LandmarkObs> &observations)
 {
     /**
      * TODO: Find the predicted measurement that is closest to each
