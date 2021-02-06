@@ -138,17 +138,128 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
      *   (look at equation 3.33) http://planning.cs.uiuc.edu/node99.html
      */
 
+    double stdland_x = std_landmark[0];
+    double stdland_y = std_landmark[1];
+
+    for (auto particle: particles)
+    {
+        double x, y, theta;
+        x = particle.x;
+        y = particle.y;
+        theta = particle.theta;
+
+        // find landmarks in the map that are in particle's sensor range.
+        vector<LandmarkObs> inRangeLandmarks;
+        double sensor_radius = sensor_range * sensor_range;
+        for (auto landmark : map_landmarks.landmark_list)
+        {
+            float landmark_x = landmark.x_f;
+            float landmark_y = landmark.y_f;
+            int id = landmark.id_i;
+
+            double dx = x - landmark_x;
+            double dy = y - landmark_y;
+
+            if (dx * dx + dy * dy <= sensor_radius)
+            {
+                inRangeLandmarks.emplace_back(LandmarkObs{id, landmark_x, landmark_y});
+            }
+        }
+
+        // transform observation coodinates(measured in particle's coordinate system) to map  coodinates
+        vector<LandmarkObs> mappedObservations;
+        for (auto observation : observations)
+        {
+            double mapped_x = cos(theta) * observation.x - sin(theta) * observation.y + x;
+            double mapped_y = sin(theta) * observation.x + cos(theta) * observation.y + y;
+
+            mappedObservations.emplace_back(LandmarkObs({observation.id, mapped_x, mapped_y}));
+        }
+
+
+        // update the nearest landmark for each observation
+        dataAssociation(inRangeLandmarks, mappedObservations);
+
+        // reseting the weight
+        particle.weight = 1.0;
+
+        // calculate  weights
+        for (auto mappedObservation: mappedObservations)
+        {
+            double obs_x = mappedObservation.x;
+            double obs_y = mappedObservation.y;
+            int landmark_id = mappedObservation.id;
+
+            double landmark_x, landmark_y;
+            int k = 0;
+            bool found = false;
+            int nLandmarks = static_cast<int>(inRangeLandmarks.size());
+            while (!found && k < nLandmarks)
+            {
+                if (inRangeLandmarks[k].id == landmark_id)
+                {
+                    landmark_x = inRangeLandmarks[k].x;
+                    landmark_y = inRangeLandmarks[k].y;
+                    found = true;
+                }
+                ++k;
+            }
+            // calculate weight
+            double dx = obs_x - landmark_x; // todo
+            double dy = obs_y - landmark_y; // todo
+
+            // Multivariate Gaussian probabilty
+
+            double gaussian_norm = (1.0 / 2 * M_PI * stdland_x * stdland_y);
+            double exponent = dx * dx / (2 * stdland_x * stdland_x) + dy * dy / (2 * stdland_y * stdland_y);
+            double weight = gaussian_norm * exp(-exponent);
+
+            if (weight == 0.0)
+                particle.weight = 0.00001;
+            else
+                particle.weight = weight;
+
+        }
+    }
 }
 
 void ParticleFilter::resample()
 {
-    /**
-     * TODO: Resample particles with replacement with probability proportional
-     *   to their weight.
-     * NOTE: You may find std::discrete_distribution helpful here.
-     *   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
-     */
+    // retrive initial index
+    std::uniform_int_distribution<int> uni_dist(0, num_particles - 1);
+    int index = uni_dist(gen);
 
+    double beta = 0.0;
+
+    // get weights and max weight
+    vector<double> weights;
+    double max_weight = std::numeric_limits<double>::min();
+    for (auto particle: particles)
+    {
+        weights.emplace_back(particle.weight);
+        if (particle.weight > max_weight)
+        {
+            max_weight = particle.weight;
+        }
+    }
+
+    // creates distribution
+    std::uniform_int_distribution<double> dist(0.0, max_weight);
+
+    vector<Particle> resampledParticles;
+    for (int i = 0; i < num_particles; ++i)
+    {
+        beta += dist(gen) * 2.0;
+        while (beta > weights[index])
+        {
+            beta -= weights[index];
+            index = (index - 1) % num_particles;
+        }
+
+        resampledParticles.emplace_back(particles[index]);
+    }
+
+    particles = resampledParticles;
 }
 
 void ParticleFilter::SetAssociations(Particle &particle,
