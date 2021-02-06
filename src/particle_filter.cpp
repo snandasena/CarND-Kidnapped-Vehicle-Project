@@ -57,14 +57,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[])
 
 void ParticleFilter::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate)
 {
-    /**
-     * TODO: Add measurements to each particle and add random Gaussian noise.
-     * NOTE: When adding noise you may find std::normal_distribution
-     *   and std::default_random_engine useful.
-     *  http://en.cppreference.com/w/cpp/numeric/random/normal_distribution
-     *  http://www.cplusplus.com/reference/random/default_random_engine/
-     */
-
+    // standards deviations
     double std_x = std_pos[0];
     double std_y = std_pos[1];
     double std_theta = std_pos[2];
@@ -99,20 +92,32 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 
     }
 
-
 }
 
 void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted, vector<LandmarkObs> &observations)
 {
-    /**
-     * TODO: Find the predicted measurement that is closest to each
-     *   observed measurement and assign the observed measurement to this
-     *   particular landmark.
-     * NOTE: this method will NOT be called by the grading code. But you will
-     *   probably find it useful to implement this method and use it as a helper
-     *   during the updateWeights phase.
-     */
+    for (auto &observation : observations)
+    {
+        double mindistance = std::numeric_limits<const double>::max();
+        int mapID = -1;
+        for (auto &predict : predicted)
+        {
+            double x = observation.x - predict.x;
+            double y = observation.y - predict.y;
 
+            double distance = x * x + y * y;
+
+            // if the distance is less than min, store the ID and udate min.
+            if (distance < mindistance)
+            {
+                mindistance = distance;
+                mapID = predict.id;
+            }
+        }
+
+        // update observation identifier
+        observation.id = mapID;
+    }
 }
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
