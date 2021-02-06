@@ -208,7 +208,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
             double dx = obs_x - landmark_x; // todo
             double dy = obs_y - landmark_y; // todo
 
-
             // Multivariate Gaussian probabilty
 
             double gaussian_norm = (1.0 / 2 * M_PI * stdland_x * stdland_y);
@@ -226,13 +225,41 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
 void ParticleFilter::resample()
 {
-    /**
-     * TODO: Resample particles with replacement with probability proportional
-     *   to their weight.
-     * NOTE: You may find std::discrete_distribution helpful here.
-     *   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
-     */
+    // retrive initial index
+    std::uniform_int_distribution<int> uni_dist(0, num_particles - 1);
+    int index = uni_dist(gen);
 
+    double beta = 0.0;
+
+    // get weights and max weight
+    vector<double> weights;
+    double max_weight = std::numeric_limits<double>::min();
+    for (auto particle: particles)
+    {
+        weights.emplace_back(particle.weight);
+        if (particle.weight > max_weight)
+        {
+            max_weight = particle.weight;
+        }
+    }
+
+    // creates distribution
+    std::uniform_int_distribution<double> dist(0.0, max_weight);
+
+    vector<Particle> resampledParticles;
+    for (int i = 0; i < num_particles; ++i)
+    {
+        beta += dist(gen) * 2.0;
+        while (beta > weights[index])
+        {
+            beta -= weights[index];
+            index = (index - 1) % num_particles;
+        }
+
+        resampledParticles.emplace_back(particles[index]);
+    }
+
+    particles = resampledParticles;
 }
 
 void ParticleFilter::SetAssociations(Particle &particle,
