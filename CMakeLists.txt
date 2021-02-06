@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 3.10)
 
 add_definitions(-std=c++14)
 
-set(CXX_FLAGS "-Wall")
+set(CXX_FLAGS "-Wall -O3")
 set(CMAKE_CXX_FLAGS "${CXX_FLAGS}")
 
 file(GLOB HEADERS src/*.h)

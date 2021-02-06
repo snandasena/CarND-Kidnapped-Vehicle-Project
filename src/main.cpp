@@ -21,7 +21,8 @@ string hasData(const string &s)
     if (found_null != string::npos)
     {
         return "";
-    } else if (b1 != string::npos && b2 != string::npos)
+    }
+    else if (b1 != string::npos && b2 != string::npos)
     {
         return s.substr(b1, b2 - b1 + 1);
     }
@@ -59,11 +60,11 @@ int main()
                     // "42" at the start of the message means there's a websocket message event.
                     // The 4 signifies a websocket message
                     // The 2 signifies a websocket event
-                    if (length && length > 2 && data[0] == '4' && data[1] == '2')
+                    if (length > 2 && data[0] == '4' && data[1] == '2')
                     {
                         auto s = hasData(string(data));
 
-                        if (s != "")
+                        if (!s.empty())
                         {
                             auto j = json::parse(s);
 
@@ -80,7 +81,8 @@ int main()
                                     double sense_theta = std::stod(j[1]["sense_theta"].get<string>());
 
                                     pf.init(sense_x, sense_y, sense_theta, sigma_pos);
-                                } else
+                                }
+                                else
                                 {
                                     // Predict the vehicle's next state from previous
                                     //   (noiseless control) data.
@@ -159,7 +161,8 @@ int main()
                                 // std::cout << msg << std::endl;
                                 ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
                             }  // end "telemetry" if
-                        } else
+                        }
+                        else
                         {
                             string msg = "42[\"manual\",{}]";
                             ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
@@ -183,7 +186,8 @@ int main()
     if (h.listen(port))
     {
         std::cout << "Listening to port " << port << std::endl;
-    } else
+    }
+    else
     {
         std::cerr << "Failed to listen to port" << std::endl;
         return -1;
