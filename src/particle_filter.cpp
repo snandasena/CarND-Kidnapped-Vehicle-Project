@@ -21,6 +21,7 @@
 using std::string;
 using std::vector;
 using std::normal_distribution;
+using std::uniform_real_distribution;
 
 void ParticleFilter::init(double x, double y, double theta, double std[])
 {
@@ -40,7 +41,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[])
     normal_distribution<double> dist_theta(theta, std_theta);
 
     // set the number of particles
-    num_particles = 100;
+//    num_particles = 100;
     // create particles
     for (int i = 0; i < num_particles; ++i)
     {
@@ -89,7 +90,6 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
         particle.x += dist_x(gen);
         particle.y += dist_y(gen);
         particle.theta += dist_theta(gen);
-
     }
 
 }
@@ -124,19 +124,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
                                    const vector<LandmarkObs> &observations,
                                    const Map &map_landmarks)
 {
-    /**
-     * TODO: Update the weights of each particle using a mult-variate Gaussian
-     *   distribution. You can read more about this distribution here:
-     *   https://en.wikipedia.org/wiki/Multivariate_normal_distribution
-     * NOTE: The observations are given in the VEHICLE'S coordinate system.
-     *   Your particles are located according to the MAP'S coordinate system.
-     *   You will need to transform between the two systems. Keep in mind that
-     *   this transformation requires both rotation AND translation (but no scaling).
-     *   The following is a good resource for the theory:
-     *   https://www.willamette.edu/~gorr/classes/GeneralGraphics/Transforms/transforms2d.htm
-     *   and the following is a good resource for the actual equation to implement
-     *   (look at equation 3.33) http://planning.cs.uiuc.edu/node99.html
-     */
 
     double stdland_x = std_landmark[0];
     double stdland_y = std_landmark[1];
@@ -193,7 +180,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
             double landmark_x, landmark_y;
             int k = 0;
             bool found = false;
-            int nLandmarks = static_cast<int>(inRangeLandmarks.size());
+            auto nLandmarks = static_cast<int>(inRangeLandmarks.size());
             while (!found && k < nLandmarks)
             {
                 if (inRangeLandmarks[k].id == landmark_id)
@@ -244,7 +231,7 @@ void ParticleFilter::resample()
     }
 
     // creates distribution
-    std::uniform_int_distribution<double> dist(0.0, max_weight);
+    uniform_real_distribution<double> dist(0.0, max_weight);
 
     vector<Particle> resampledParticles;
     for (int i = 0; i < num_particles; ++i)
@@ -267,11 +254,12 @@ void ParticleFilter::SetAssociations(Particle &particle,
                                      const vector<double> &sense_x,
                                      const vector<double> &sense_y)
 {
-    // particle: the particle to which assign each listed association,
-    //   and association's (x,y) world coordinates mapping
-    // associations: The landmark id that goes along with each listed association
-    // sense_x: the associations x mapping already converted to world coordinates
-    // sense_y: the associations y mapping already converted to world coordinates
+
+    // cleart the preovious associans
+    particle.associations.clear();
+    particle.sense_x.clear();
+    particle.sense_y.clear();
+
     particle.associations = associations;
     particle.sense_x = sense_x;
     particle.sense_y = sense_y;
