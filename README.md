@@ -28,7 +28,7 @@ Following are the steps for a particle filter implentation.
 
 ##### Psuedo Code
 
-*This is an outline of steps you will need to take with your code in order to implement a particle filter for localizing an autonomous vehicle. The pseudo code steps correspond to the steps in the algorithm flow chart, initialization, prediction, particle weight updates, and resampling([Full C++ implementation](src/particle_filter.cpp)).* 
+*This is an outline of steps you will need to take with your code in order to implement a particle filter for localizing an autonomous vehicle. The pseudo code steps correspond to the steps in the algorithm flow chart, initialization, prediction, particle weight updates, and resampling([To see full C++ implementation `particle_filter.cpp`](src/particle_filter.cpp)).* 
 
 ##### Initialization
 
