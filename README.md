@@ -10,7 +10,7 @@ Project: Kidnapped Vehicle
 *In this project we will implement a 2 dimensional particle filter in C++. The particle filter will be given a map and some initial localization information (analogous to what a GPS would provide). At each time step particle filter will also get observation and control data.*
 
 ---
-|![](data/images/final-results.gif)|
+|<img src="data/images/final-results.gif" width="500" height="300" />|
 |----------------------------------|
 |[Running instructions](https://www.youtube.com/watch?v=neGq381AG64)|
 
