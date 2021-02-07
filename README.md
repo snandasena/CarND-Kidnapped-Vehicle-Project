@@ -196,3 +196,50 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
     }
 }
 ```
+
+###### Resampling
+
+*During resampling we will resample M times (M is range of 0 to length_of_particleArray) drawing a particle i (i is the particle index) proportional to its weight .*
+
+|<img src="data/images/02-l-pseudocode.00-00-35-08.still004.png" width="500" height="300" />|
+|----------------------------------|
+|Source: [Udacity Self Driving Car Engineer](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013) |
+
+`C++ Imeplementation for this project.`
+
+```cpp
+void ParticleFilter::resample()
+{
+    // get weights and max weight
+    vector<double> weights;
+    double max_weight = std::numeric_limits<double>::min();
+    for (const auto &particle: particles)
+    {
+        weights.emplace_back(particle.weight);
+        if (particle.weight > max_weight)
+        {
+            max_weight = particle.weight;
+        }
+    }
+
+    // creates distribution
+    uniform_real_distribution<double> uni_real_dist(0.0, max_weight);
+    // retrive initial index
+    std::uniform_int_distribution<int> uni_int_dist(0, num_particles - 1);
+    int index = uni_int_dist(gen);
+    double beta = 0.0;
+
+    vector<Particle> resampledParticles;
+    for (int i = 0; i < num_particles; ++i)
+    {
+        beta += uni_real_dist(gen) * 2.0;
+        while (beta > weights[index])
+        {
+            beta -= weights[index];
+            index = (index + 1) % num_particles;
+        }
+        resampledParticles.emplace_back(particles[index]);
+    }
+    particles = resampledParticles;
+}
+```
