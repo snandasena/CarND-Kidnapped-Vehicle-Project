@@ -17,5 +17,7 @@ Project: Kidnapped Vehicle
 ### Particle Filter Implemetation
 Following are the steps for a particle filter implentation.
 
+**Note: These steps were taken from [Udacity Self Driving Car Engineer Nano Degree Programe](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013).**
+
 #### Particle Filter Algorithm Steps and Inputs
 *The flowchart below represents the steps of the particle filter algorithm as well as its inputs.*
