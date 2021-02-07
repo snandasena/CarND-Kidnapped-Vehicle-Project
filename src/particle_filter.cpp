@@ -3,7 +3,7 @@
  *
  * Created on: Dec 12, 2016
  * Author: Tiffany Huang
- * Modified(Implemented): Sajith Nandasena Feb, 2021
+ * Modified by(Implemented): Sajith Nandasena Feb, 2021
  */
 
 #include "particle_filter.h"
@@ -149,11 +149,10 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
         // calculate  weights
         for (const auto &mappedObservation: mappedObservations)
         {
-            double obs_x = mappedObservation.x;
-            double obs_y = mappedObservation.y;
             int landmark_id = mappedObservation.id;
-
             double landmark_x, landmark_y;
+            landmark_x = 0.0;
+            landmark_y = 0.0;
             for (const auto &landmark : inRangeLandmarks)
             {
                 if (landmark.id == landmark_id)
@@ -163,16 +162,14 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
                     break;
                 }
             }
-
             // calculate weight
-            double dx = obs_x - landmark_x; // todo
-            double dy = obs_y - landmark_y; // todo
-
+            double dx = mappedObservation.x - landmark_x;
+            double dy = mappedObservation.y - landmark_y;
             // Multivariate Gaussian probabilty
             double gaussian_norm = (1.0 / 2 * M_PI * stdland_x * stdland_y);
-            double exponent = dx * dx / (2 * pow(stdland_x, 2)) + dy * dy / (2 * pow(stdland_y, 2));
+            double exponent = pow(dx, 2) / (2 * pow(stdland_x, 2)) + pow(dy, 2) / (2 * pow(stdland_y, 2));
             double weight = gaussian_norm * exp(-exponent);
-            if (weight == 0)
+            if (weight == 0.0)
                 particle.weight *= 0.00001;
             else
                 particle.weight *= weight;
@@ -182,12 +179,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
 
 void ParticleFilter::resample()
 {
-    // retrive initial index
-    std::uniform_int_distribution<int> uni_dist(0, num_particles - 1);
-    int index = uni_dist(gen);
-
-    double beta = 0.0;
-
     // get weights and max weight
     vector<double> weights;
     double max_weight = std::numeric_limits<double>::min();
@@ -201,12 +192,16 @@ void ParticleFilter::resample()
     }
 
     // creates distribution
-    uniform_real_distribution<double> dist(0.0, max_weight);
+    uniform_real_distribution<double> uni_real_dist(0.0, max_weight);
+    // retrive initial index
+    std::uniform_int_distribution<int> uni_int_dist(0, num_particles - 1);
+    int index = uni_int_dist(gen);
+    double beta = 0.0;
 
     vector<Particle> resampledParticles;
     for (int i = 0; i < num_particles; ++i)
     {
-        beta += dist(gen) * 2.0;
+        beta += uni_real_dist(gen) * 2.0;
         while (beta > weights[index])
         {
             beta -= weights[index];
@@ -220,7 +215,6 @@ void ParticleFilter::resample()
 void ParticleFilter::SetAssociations(Particle &particle, const vector<int> &associations, const vector<double> &sense_x,
                                      const vector<double> &sense_y)
 {
-
     // cleart the preovious associans
     particle.associations.clear();
     particle.sense_x.clear();

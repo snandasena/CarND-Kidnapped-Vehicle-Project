@@ -15,5 +15,5 @@ cd `dirname $0`
 # Compile code.
 mkdir -p build
 cd build
-cmake ..
-make $*
+cmake -j 4 ..
+make -j 4 $*
