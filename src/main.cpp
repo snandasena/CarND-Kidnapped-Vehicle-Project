@@ -128,23 +128,21 @@ int main()
                                 // Calculate and output the average weighted error of the particle
                                 //   filter over all time steps so far.
                                 vector<Particle> particles = pf.particles;
-                                auto num_particles = static_cast<int>(particles.size());
                                 double highest_weight = -1.0;
                                 Particle best_particle;
                                 double weight_sum = 0.0;
-                                for (int i = 0; i < num_particles; ++i)
+                                for (const auto &particle: particles)
                                 {
-                                    if (particles[i].weight > highest_weight)
+                                    if (particle.weight > highest_weight)
                                     {
-                                        highest_weight = particles[i].weight;
-                                        best_particle = particles[i];
+                                        highest_weight = particle.weight;
+                                        best_particle = particle;
                                     }
-
-                                    weight_sum += particles[i].weight;
+                                    weight_sum += particle.weight;
                                 }
 
                                 std::cout << "highest w " << highest_weight << std::endl;
-                                std::cout << "average w " << weight_sum / num_particles << std::endl;
+                                std::cout << "average w " << weight_sum / particles.size() << std::endl;
 
                                 json msgJson;
                                 msgJson["best_particle_x"] = best_particle.x;
