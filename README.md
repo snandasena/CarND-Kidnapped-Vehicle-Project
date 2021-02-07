@@ -13,3 +13,9 @@ Project: Kidnapped Vehicle
 |![](data/images/final-results.gif)|
 |----------------------------------|
 |[Running instructions](https://www.youtube.com/watch?v=neGq381AG64)|
+
+### Particle Filter Implemetation
+Following are the steps for a particle filter implentation.
+
+#### Particle Filter Algorithm Steps and Inputs
+*The flowchart below represents the steps of the particle filter algorithm as well as its inputs.*
