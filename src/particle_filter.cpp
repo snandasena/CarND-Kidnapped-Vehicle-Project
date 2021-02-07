@@ -8,16 +8,9 @@
 
 #include "particle_filter.h"
 
-#include <cmath>
 #include <algorithm>
 #include <iostream>
 #include <iterator>
-#include <numeric>
-#include <random>
-#include <string>
-#include <vector>
-
-#include "helper_functions.h"
 
 using std::string;
 using std::vector;
@@ -114,7 +107,6 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted, vector<Landm
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], const vector<LandmarkObs> &observations,
                                    const Map &map_landmarks)
 {
-
     double stdland_x = std_landmark[0];
     double stdland_y = std_landmark[1];
 
@@ -148,7 +140,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
             mappedObservations.emplace_back(LandmarkObs{observation.id, mapped_x, mapped_y});
         }
 
-
         // update the nearest landmark for each observation
         dataAssociation(inRangeLandmarks, mappedObservations);
 
@@ -178,16 +169,13 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
             double dy = obs_y - landmark_y; // todo
 
             // Multivariate Gaussian probabilty
-
             double gaussian_norm = (1.0 / 2 * M_PI * stdland_x * stdland_y);
             double exponent = dx * dx / (2 * pow(stdland_x, 2)) + dy * dy / (2 * pow(stdland_y, 2));
             double weight = gaussian_norm * exp(-exponent);
-
             if (weight == 0)
                 particle.weight *= 0.00001;
             else
                 particle.weight *= weight;
-
         }
     }
 }
@@ -224,17 +212,12 @@ void ParticleFilter::resample()
             beta -= weights[index];
             index = (index + 1) % num_particles;
         }
-
-        std::cout << beta << "\t" << index << "\n";
         resampledParticles.emplace_back(particles[index]);
     }
-
     particles = resampledParticles;
 }
 
-void ParticleFilter::SetAssociations(Particle &particle,
-                                     const vector<int> &associations,
-                                     const vector<double> &sense_x,
+void ParticleFilter::SetAssociations(Particle &particle, const vector<int> &associations, const vector<double> &sense_x,
                                      const vector<double> &sense_y)
 {
 
@@ -261,7 +244,6 @@ string ParticleFilter::getAssociations(Particle best)
 string ParticleFilter::getSenseCoord(Particle best, string coord)
 {
     vector<double> v;
-
     if (coord == "X")
     {
         v = best.sense_x;
