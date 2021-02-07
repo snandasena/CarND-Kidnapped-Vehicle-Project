@@ -19,9 +19,14 @@ Following are the steps for a particle filter implentation.
 
 **Note: These steps were taken from [Udacity Self Driving Car Engineer Nano Degree Programe](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013).**
 
-#### Particle Filter Algorithm Steps and Inputs
+##### Particle Filter Algorithm Steps and Inputs
 *The flowchart below represents the steps of the particle filter algorithm as well as its inputs.*
 
 |<img src="data/images/02-l-pseudocode.00-00-47-13.still006.png" width="500" height="300" />|
 |----------------------------------|
 |[Source: Udacity Self Driving Car Engineer](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013) |
+
+##### Psuedo Code
+
+*This is an outline of steps you will need to take with your code in order to implement a particle filter for localizing an autonomous vehicle. The pseudo code steps correspond to the steps in the algorithm flow chart, initialization, prediction, particle weight updates, and resampling([Full C++ implementation](src/particle_filter.cpp)).* 
+
