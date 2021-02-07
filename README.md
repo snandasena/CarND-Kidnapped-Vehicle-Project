@@ -1,4 +1,4 @@
-Project: Kidnapped Vehicle
+Project: Kidnapped Vehicle([`Particle Filter`](https://en.wikipedia.org/wiki/Particle_filter))
 ---
 
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
@@ -12,7 +12,7 @@ Project: Kidnapped Vehicle
 ---
 |<img src="data/images/final-results.gif" width="500" height="300" />|
 |----------------------------------|
-|[Running instructions](https://www.youtube.com/watch?v=neGq381AG64)|
+|[Running instructions](https://www.youtube.com/watch?v=neGq381AG64) |
 
 ### Particle Filter Implemetation
 Following are the steps for a particle filter implentation.
@@ -21,3 +21,7 @@ Following are the steps for a particle filter implentation.
 
 #### Particle Filter Algorithm Steps and Inputs
 *The flowchart below represents the steps of the particle filter algorithm as well as its inputs.*
+
+|<img src="data/images/final-results.gif" width="500" height="300" />|
+|----------------------------------|
+|[Running instructions](https://www.youtube.com/watch?v=neGq381AG64) |
