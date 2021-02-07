@@ -22,6 +22,6 @@ Following are the steps for a particle filter implentation.
 #### Particle Filter Algorithm Steps and Inputs
 *The flowchart below represents the steps of the particle filter algorithm as well as its inputs.*
 
-|<img src="data/images/final-results.gif" width="500" height="300" />|
+|<img src="data/images/02-l-pseudocode.00-00-47-13.still006.png" width="500" height="300" />|
 |----------------------------------|
-|[Running instructions](https://www.youtube.com/watch?v=neGq381AG64) |
+|[Source: Udacity Self Driving Car Engineer](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013) |
