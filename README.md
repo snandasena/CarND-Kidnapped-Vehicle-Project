@@ -73,7 +73,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[])
 
 ###### Prediction
 
-During the prediction step we add the control input (yaw rate & velocity) for all particles.
+*During the prediction step we add the control input (yaw rate & velocity) for all particles.*
 
 |<img src="data/images/02-l-pseudocode.00-00-16-01.still002.png" width="500" height="300" />|
 |----------------------------------|
@@ -109,6 +109,90 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
         particle.x += dist_x(gen);
         particle.y += dist_y(gen);
         particle.theta += dist_theta(gen);
+    }
+}
+```
+
+###### Update
+*During the update step, we update our particle weights using map landmark positions and feature measurements.*
+
+|<img src="data/images/02-l-pseudocode.00-00-30-05.still003.png" width="500" height="300" />|
+|----------------------------------|
+|Source: [Udacity Self Driving Car Engineer](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013) |
+
+`C++ Imeplementation for this project.`
+
+```cpp
+void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], const vector<LandmarkObs> &observations,
+                                   const Map &map_landmarks)
+{
+    double stdland_x = std_landmark[0];
+    double stdland_y = std_landmark[1];
+
+    for (auto &particle: particles)
+    {
+        double x, y, theta;
+        x = particle.x;
+        y = particle.y;
+        theta = particle.theta;
+
+        // find landmarks in the map that are in particle's sensor range.
+        vector<LandmarkObs> inRangeLandmarks; // predictions
+        for (const auto &landmark : map_landmarks.landmark_list)
+        {
+            float landmark_x = landmark.x_f;
+            float landmark_y = landmark.y_f;
+            int id = landmark.id_i;
+
+            if (fabs(landmark_x - x) <= sensor_range && fabs(landmark_y - y) <= sensor_range)
+            {
+                inRangeLandmarks.emplace_back(LandmarkObs{id, landmark_x, landmark_y});
+            }
+        }
+
+        // transform observation coodinates(measured in particle's coordinate system) to map  coodinates
+        vector<LandmarkObs> mappedObservations;
+        for (const auto &observation : observations)
+        {
+            double mapped_x = cos(theta) * observation.x - sin(theta) * observation.y + x;
+            double mapped_y = sin(theta) * observation.x + cos(theta) * observation.y + y;
+            mappedObservations.emplace_back(LandmarkObs{observation.id, mapped_x, mapped_y});
+        }
+
+        // update the nearest landmark for each observation
+        dataAssociation(inRangeLandmarks, mappedObservations);
+
+        // reseting the weight
+        particle.weight = 1.0;
+
+        // calculate  weights
+        for (const auto &mappedObservation: mappedObservations)
+        {
+            int landmark_id = mappedObservation.id;
+            double landmark_x, landmark_y;
+            landmark_x = 0.0;
+            landmark_y = 0.0;
+            for (const auto &landmark : inRangeLandmarks)
+            {
+                if (landmark.id == landmark_id)
+                {
+                    landmark_x = landmark.x;
+                    landmark_y = landmark.y;
+                    break;
+                }
+            }
+            // calculate weight
+            double dx = mappedObservation.x - landmark_x;
+            double dy = mappedObservation.y - landmark_y;
+            // Multivariate Gaussian probabilty
+            double gaussian_norm = (1.0 / 2 * M_PI * stdland_x * stdland_y);
+            double exponent = pow(dx, 2) / (2 * pow(stdland_x, 2)) + pow(dy, 2) / (2 * pow(stdland_y, 2));
+            double weight = gaussian_norm * exp(-exponent);
+            if (weight == 0.0)
+                particle.weight *= 0.00001;
+            else
+                particle.weight *= weight;
+        }
     }
 }
 ```
