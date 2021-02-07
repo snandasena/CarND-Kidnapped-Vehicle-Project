@@ -9,7 +9,7 @@
 #ifndef HELPER_FUNCTIONS_H_
 #define HELPER_FUNCTIONS_H_
 
-#include <math.h>
+#include <cmath>
 #include <fstream>
 #include <sstream>
 #include <string>
