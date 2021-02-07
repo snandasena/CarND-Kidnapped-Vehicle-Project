@@ -243,3 +243,12 @@ void ParticleFilter::resample()
     particles = resampledParticles;
 }
 ```
+
+### References
+* https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013
+* http://ais.informatik.uni-freiburg.de/teaching/ss18/robotics/index_en.php
+* https://github.com/snandasena/kalman-filter-cpp
+
+### Acknowledgments
+Big thank you to [Udacity](https://www.udacity.com) for providing the template code and simulator for this project.
+
