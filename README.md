@@ -34,3 +34,13 @@ Following are the steps for a particle filter implentation.
 |<img src="data/images/02-l-pseudocode.00-00-14-28.still001.png" width="500" height="300" />|
 |----------------------------------|
 |Source: [Udacity Self Driving Car Engineer](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013) |
+
+##### Initialization
+
+*At the initialization step we estimate our position from GPS input. The subsequent steps in the process will refine this estimate to localize our vehicle.*
+
+
+|<img src="data/images/02-l-pseudocode.00-00-16-01.still002.png" width="500" height="300" />|
+|----------------------------------|
+|Source: [Udacity Self Driving Car Engineer](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013) |
+
